@@ -1,0 +1,7 @@
+C:\Users\gabri\Desktop\projeto_microservices\usermanagement\src\main\java\com\example\usermanagement\controller\UserController.java
+C:\Users\gabri\Desktop\projeto_microservices\usermanagement\src\main\java\com\example\usermanagement\dto\ChangePasswordRequest.java
+C:\Users\gabri\Desktop\projeto_microservices\usermanagement\src\main\java\com\example\usermanagement\model\User.java
+C:\Users\gabri\Desktop\projeto_microservices\usermanagement\src\main\java\com\example\usermanagement\repository\UserRepository.java
+C:\Users\gabri\Desktop\projeto_microservices\usermanagement\src\main\java\com\example\usermanagement\exception\GlobalExceptionHandler.java
+C:\Users\gabri\Desktop\projeto_microservices\usermanagement\src\main\java\com\example\usermanagement\UserManagementApplication.java
+C:\Users\gabri\Desktop\projeto_microservices\usermanagement\src\main\java\com\example\usermanagement\service\UserService.java
