@@ -16,7 +16,7 @@ public class UserService {
 
     public User createUser(String username, String password) {
         if (userRepository.findByUsername(username).isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
+            throw new IllegalArgumentException("Username já existente");
         }
         User user = new User();
         user.setUsername(username);
@@ -26,16 +26,16 @@ public class UserService {
 
     public User loginUser(String username, String password) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid username or password"));
+                .orElseThrow(() -> new IllegalArgumentException("Usuário ou Senha Inválidos"));
         
         if (user.isLocked()) {
-            throw new IllegalArgumentException("User is locked");
+            throw new IllegalArgumentException("Usuário está Bloqueado");
         }
 
         if (user.getPassword().equals(password)) {
             user.setTotalLogins(user.getTotalLogins() + 1);
             if (user.getTotalLogins() > 10) {
-                throw new IllegalArgumentException("Password must be changed");
+                throw new IllegalArgumentException("Senha precisa ser trocada");
             }
         } else {
             user.setTotalFailedLogins(user.getTotalFailedLogins() + 1);
@@ -43,7 +43,7 @@ public class UserService {
                 user.setLocked(true);
             }
             userRepository.save(user);
-            throw new IllegalArgumentException("Invalid username or password");
+            throw new IllegalArgumentException("Usuário ou Senha Inválidos");
         }
 
         return userRepository.save(user);
@@ -51,10 +51,10 @@ public class UserService {
 
     public User changePassword(String username, String oldPassword, String newPassword) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid username or password"));
+                .orElseThrow(() -> new IllegalArgumentException("Usuário ou Senha Inválidos"));
 
         if (!user.getPassword().equals(oldPassword)) {
-            throw new IllegalArgumentException("Invalid username or password");
+            throw new IllegalArgumentException("Usuário ou Senha Inválidos");
         }
 
         user.setPassword(newPassword);
@@ -64,5 +64,17 @@ public class UserService {
 
     public List<User> getBlockedUsers() {
         return userRepository.findByLocked(true);
+    }
+
+    public User desbloquearUsuario(String username) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setLocked(false);
+            user.setTotalFailedLogins(0);
+            return userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("Usuário não encontrado");
+        }
     }
 }

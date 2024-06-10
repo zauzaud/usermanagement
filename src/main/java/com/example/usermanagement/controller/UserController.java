@@ -5,8 +5,10 @@ import com.example.usermanagement.model.User;
 import com.example.usermanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -43,5 +45,13 @@ public class UserController {
         // Chama a lista de usuários bloqueados
         List<User> blockedUsers = userService.getBlockedUsers();
         return ResponseEntity.ok(blockedUsers);
+    }
+
+    @PutMapping("/desbloquear/{username}")
+    @PreAuthorize("ADMIN")
+    public ResponseEntity<User> desbloquearUsuario(@PathVariable String username) {
+        // Chama para desbloquear o usuário
+        User user = userService.desbloquearUsuario(username);
+        return ResponseEntity.ok(user);
     }
 }
