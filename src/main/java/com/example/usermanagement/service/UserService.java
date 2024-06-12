@@ -1,5 +1,6 @@
 package com.example.usermanagement.service;
 
+import com.example.usermanagement.kafka.KafkaProducer;
 import com.example.usermanagement.model.User;
 import com.example.usermanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private KafkaProducer kafkaProducer;
+
     public User createUser(String username, String password) {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new IllegalArgumentException("Username já existente");
@@ -27,7 +31,7 @@ public class UserService {
     public User loginUser(String username, String password) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário ou Senha Inválidos"));
-        
+
         if (user.isLocked()) {
             throw new IllegalArgumentException("Usuário está Bloqueado");
         }
@@ -43,6 +47,7 @@ public class UserService {
                 user.setLocked(true);
             }
             userRepository.save(user);
+            kafkaProducer.sendMessage(username);
             throw new IllegalArgumentException("Usuário ou Senha Inválidos");
         }
 
